@@ -14,56 +14,48 @@ public class BresenhamLineDrawer implements LineDrawer {
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
-        int dx = sign(x2 - x1);  //приращения
-        int dy = sign(y2 - y1);
-        int lengthX = Math.abs(x2 - x1);  //длины отрезков
-        int lengthY = Math.abs(y2 - y1);
 
-        int length = Math.max(lengthX, lengthY);
-        int e = 0;       //ошибка
-        int x = x1; int y = y1;
-        if (lengthX >= lengthY) {
-            e -= lengthX;
-            while (length > 0) {
-                pd.setPixel(x, y, Color.BLACK);
-                x += dx;
-                e += 2 * lengthY;
-                if (e > 0) {
-                    e -= 2 * lengthX;
-                    y += dy;
-                }
-                length--;
-            }
-        } else {   //если растёт по у
-            e = -lengthY;
-            while (length > 0) {
-                pd.setPixel(x, y, Color.BLACK);
-                y += dy;
-                e += 2 * lengthX;
-                if (e > 0) {
-                    e -= 2 * lengthY;
-                    x += dx;
-                }
-                length--;
-            }
+        boolean steep = Math.abs(y2 - y1) > Math.abs(x2 - x1);
+        if (steep) {
+            int temp = x1; x1 = y1; y1 = temp;
+            int t = x2; x2 = y2; y2 = t;
         }
-    }
 
-    private int sign(int x) {
-        if (x >= 0)
-            return 1;
-        else
-            return -1;
-    }
+        if (x1 > x2) {
+            int temp = x1; x1 = x2; x2 = temp;
+            int t = y1; y1 = y2; y2 = t;
+        }
 
-    /*for (int i = 0; i <= dx; i++) {
-            pd.setPixel(x1, y1, Color.BLACK);
+        int dx = x2 - x1;
+        int dy = Math.abs(y2 - y1);
+        int e = 2 * dy - dx;
+        int step;
+        if (y1 < y2)      // направление роста координаты по y
+            step = 1;
+        else step = -1;
+        int y = y1;
+
+        for (int x = x1; x <= x2; x++) {
+            if(steep)
+                pd.setPixel(y, x, Color.BLACK);
+            else
+                pd.setPixel(x, y, Color.BLACK);
+
             if (e >= 0) {
-                y1++;
-                e = e - 2 * dx + 2 * dy;
-            } else {
-                e = e + 2 * dy;
+                y += step;
+                e += -2 * dx + 2 * dy;
+            } else
+                e += 2 * dy;
+        }
+
+        /*for (int x = x1; x <= x2; x++) {
+            pd.setPixel(steep ? y : x, steep ? x : y, Color.BLACK);
+            e -= dy;
+            if (e < 0)
+            {
+                y += ystep;
+                e += dx;
             }
-            x1++;
         }*/
+    }
 }

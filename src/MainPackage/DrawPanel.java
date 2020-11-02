@@ -1,10 +1,14 @@
 package MainPackage;
 
+import MainPackage.line_drawers.BresenhamLineDrawer;
 import MainPackage.line_drawers.DDALineDrawer;
 import MainPackage.line_drawers.GraphicsLineDrawer;
+import MainPackage.line_drawers.WuLineDrawer;
 import MainPackage.utils.DrawUtils;
+import javafx.scene.layout.BackgroundFill;
 import pixel_drawers.GraphicsPixelDrawer;
 
+import javax.sound.sampled.Line;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -28,7 +32,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener {
         bi_g.setColor(Color.BLACK);
         /**/
         PixelDrawer pd = new GraphicsPixelDrawer(bi_g);
-        LineDrawer ld = new DDALineDrawer(pd); //сделать переключатель для выбора linedrawer'a
+        //LineDrawer ld = new DDALineDrawer(pd); //сделать переключатель для выбора linedrawer'a
+        //LineDrawer ld = new BresenhamLineDrawer(pd);
+        LineDrawer ld = new WuLineDrawer(pd);
 
         drawAll(ld);
         /**/
@@ -37,7 +43,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener {
     }
 
     private void drawAll(LineDrawer ld) {
-        DrawUtils.drawSnowFlake(ld,getWidth() / 2, getHeight() / 2, 60, 12);
+        DrawUtils.drawSnowFlake(ld,getWidth() / 2-100, getHeight() / 2-100, 100, 32);
         ld.drawLine(getWidth() / 2, getHeight() / 2,
                 position.x, position.y);
     }
